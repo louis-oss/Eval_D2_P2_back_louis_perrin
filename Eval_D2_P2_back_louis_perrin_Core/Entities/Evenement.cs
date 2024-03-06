@@ -2,9 +2,9 @@
 
 public class Evenement
 {
-    public string title;
-    public string description;
-    public string location;
-    public DateTime Date;
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public string Location { get; set; }
+    public DateTime Date { get; set; }
 
 }

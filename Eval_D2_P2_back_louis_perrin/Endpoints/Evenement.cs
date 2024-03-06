@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-namespace Eval_D2_P2_back_louis_perrin
+namespace Eval_D2_P2_back_louis_perrin_API.Endpoints
 {
-    public class HttpEvenement
+    public class Evenement
     {
-        private readonly ILogger<HttpEvenement> _logger;
+        private readonly ILogger<Evenement> _logger;
 
-        public HttpEvenement(ILogger<HttpEvenement> logger)
+        public Evenement(ILogger<Evenement> logger)
         {
             _logger = logger;
         }

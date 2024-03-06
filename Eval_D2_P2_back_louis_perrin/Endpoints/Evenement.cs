@@ -32,6 +32,6 @@ public class Evenement
 
         events.Add(eventData); // Add the event to the in-memory list
 
-        return new OkObjectResult($"Event added with title: {eventData.Title}");
+        return new OkObjectResult($"Event added");
     }
 }

@@ -21,7 +21,7 @@ public class Evenement
 
     [Function("AddEvent")]
     public static async Task<IActionResult> AddEvent(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
         ILogger _logger)
     {
         _logger.LogInformation("C# HTTP trigger function processed a request to add an event.");
@@ -51,5 +51,38 @@ public class Evenement
         await response.WriteStringAsync(JsonConvert.SerializeObject(events), Encoding.UTF8);
 
         return response;
+    }
+
+    [Function("UpdateEvent")]
+    public static async Task<HttpResponseData> UpdateEvent(
+               [HttpTrigger(AuthorizationLevel.Function, "put", Route = "event/{Title}")] HttpRequest req,
+                      ILogger _logger)
+    {
+        _logger.LogInformation("C# HTTP trigger function processed a request to modify an event.");
+
+        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+        var eventData = JsonConvert.DeserializeObject<Evenement>(requestBody);
+        if (eventData == null)
+        {
+            var badRequestResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+            await badRequestResponse.WriteStringAsync("Please pass event data in the request body", Encoding.UTF8);
+            return badRequestResponse;
+        }
+
+        var existingEvent = events.FirstOrDefault(e => e.Title == eventData.Title);
+        if (existingEvent == null)
+        {
+            var notFoundResponse = req.CreateResponse(HttpStatusCode.NotFound);
+            await notFoundResponse.WriteStringAsync("Event not found", Encoding.UTF8);
+            return notFoundResponse;
+        }
+
+        existingEvent.Description = eventData.Description;
+        existingEvent.Location = eventData.Location;
+        existingEvent.Date = eventData.Date;
+
+        var okResponse = req.CreateResponse(HttpStatusCode.OK);
+        await okResponse.WriteStringAsync("Event updated", Encoding.UTF8);
+        return okResponse;
     }
 }

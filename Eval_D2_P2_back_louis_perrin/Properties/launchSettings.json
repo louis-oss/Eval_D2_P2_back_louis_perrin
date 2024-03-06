@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Eval_D2_P2_back_louis_perrin": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7082",
+      "launchBrowser": false
+    }
+  }
+}

@@ -55,12 +55,13 @@ public class Evenement
 
     [Function("UpdateEvent")]
     public static async Task<HttpResponseData> UpdateEvent(
-               [HttpTrigger(AuthorizationLevel.Function, "put", Route = "event/{Title}")] HttpRequest req,
-                      ILogger _logger)
+               [HttpTrigger(AuthorizationLevel.Function, "put", Route = "event/{Title}")] HttpRequestData req,
+                      ILogger _logger, string Title)
     {
         _logger.LogInformation("C# HTTP trigger function processed a request to modify an event.");
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
         var eventData = JsonConvert.DeserializeObject<Evenement>(requestBody);
         if (eventData == null)
         {
@@ -83,6 +84,28 @@ public class Evenement
 
         var okResponse = req.CreateResponse(HttpStatusCode.OK);
         await okResponse.WriteStringAsync("Event updated", Encoding.UTF8);
+        return okResponse;
+    }
+
+    [Function("DeleteEvent")]
+    public static async Task<HttpResponseData> DeleteEvent(
+               [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "event/{Title}")] HttpRequestData req,
+                      ILogger _logger, string Title)
+    {
+        _logger.LogInformation("C# HTTP trigger function processed a request to delete an event.");
+
+        var existingEvent = events.FirstOrDefault(e => e.Title == Title);
+        if (existingEvent == null)
+        {
+            var notFoundResponse = req.CreateResponse(HttpStatusCode.NotFound);
+            await notFoundResponse.WriteStringAsync("Event not found", Encoding.UTF8);
+            return notFoundResponse;
+        }
+
+        events.Remove(existingEvent);
+
+        var okResponse = req.CreateResponse(HttpStatusCode.OK);
+        await okResponse.WriteStringAsync("Event deleted", Encoding.UTF8);
         return okResponse;
     }
 }
